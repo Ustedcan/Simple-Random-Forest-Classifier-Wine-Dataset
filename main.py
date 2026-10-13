@@ -1,5 +1,5 @@
 import os
-import pandas as pd
+import s3fs
 from dotenv import load_dotenv
 
 from src.load_csv import read_csv
@@ -7,16 +7,20 @@ from src.get_x_y import get_x_y
 from src.make_split import make_split
 from src.model import build_model, train_model, make_predictions
 from src.make_report import make_report
+from save_model import save_model
 
 load_dotenv()
 
-AWS_ENDPOINT_URL = os.getenv("MINIO_ENDPOINT")
-AWS_ACCESS_KEY_ID = os.getenv("MINIO_USER_ROOT")
-AWS_SECRET_ACCESS_KEY = os.getenv("MINIO_USER_PASSWORD")
-
-BUCKET_NAME = os.getenv("BUCKET_NAME")
+BUCKET_BRONZE = os.getenv("BUCKET_BRONZE")
 FILE_NAME = os.getenv("FILE_NAME")
-S3_URL = f"s3://{BUCKET_NAME}/{FILE_NAME}"
+S3_URL = f"s3://{BUCKET_BRONZE}/{FILE_NAME}"
+
+
+BUCKET_GOLD = os.getenv("BUCKET_GOLD")
+MODEL_FOLDER = os.getenv("MODEL_FOLDER")
+MODEL_NAME = os.getenv("MODEL_NAME")
+
+fs = s3fs.S3FileSystem()
 
 def main() -> None:
 
@@ -24,10 +28,8 @@ def main() -> None:
     df = read_csv(
         filepath_or_buffer=S3_URL,
         storage_options={
-            "key": AWS_ACCESS_KEY_ID,
-            "secret": AWS_SECRET_ACCESS_KEY,
             "client_kwargs": {
-                "endpoint_url": AWS_ENDPOINT_URL
+                "endpoint_url": os.getenv("AWS_ENDPOINT_URL")
             }
         }
     )
@@ -47,6 +49,10 @@ def main() -> None:
     model = build_model()
     fitted_model = train_model(model, x_train, y_train)
     preds = make_predictions(fitted_model, x_test)
+
+    # Save model 
+    model_s3_path = f"{BUCKET_GOLD}/{MODEL_FOLDER}/{MODEL_NAME}.joblib"
+    save_model(model=fitted_model, s3_path=model_s3_path, fs=fs)
 
     # Report
     make_report(y_test, preds)

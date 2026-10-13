@@ -687,6 +687,7 @@ source = { editable = "." }
 dependencies = [
     { name = "dotenv" },
     { name = "ipykernel" },
+    { name = "joblib" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pandas" },
@@ -698,6 +699,7 @@ dependencies = [
 requires-dist = [
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "ipykernel", specifier = ">=7.4.0" },
+    { name = "joblib", specifier = ">=1.6.0" },
     { name = "numpy", specifier = ">=2.4.6" },
     { name = "pandas", specifier = ">=3.0.6" },
     { name = "s3fs", specifier = ">=2026.9.0" },
