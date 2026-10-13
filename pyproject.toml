@@ -1,0 +1,24 @@
+[project]
+name = "make-class"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Carlos-Lincango", email = "clincango_425@hotmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "dotenv>=0.9.9",
+    "ipykernel>=7.4.0",
+    "numpy>=2.4.6",
+    "pandas>=3.0.6",
+    "s3fs>=2026.9.0",
+    "scikit-learn>=1.9.1",
+]
+
+[project.scripts]
+make-class = "make_class:main"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
